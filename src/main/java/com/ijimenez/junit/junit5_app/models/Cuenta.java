@@ -1,4 +1,4 @@
-package com.ijimenez.junit.junit5_app;
+package com.ijimenez.junit.junit5_app.models;
 
 import com.ijimenez.junit.junit5_app.eceptions.DineroInsuficienteEception;
 
@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 public class Cuenta {
     private String persona;
     private BigDecimal saldo;
+
+    private Banco banco;
 
     public Cuenta() {
     }
@@ -36,7 +38,7 @@ public class Cuenta {
         //this.saldo = this.saldo.subtract(monto);
         BigDecimal nuevoSaldo = this.saldo.subtract(monto);
 
-        if (nuevoSaldo.compareTo(BigDecimal.ZERO)<0){
+        if (nuevoSaldo.compareTo(BigDecimal.ZERO) < 0) {
             throw new DineroInsuficienteEception("Dinero insuficiente");
         }
 
@@ -57,5 +59,18 @@ public class Cuenta {
             return false;//no son iguales
         }
         return this.persona.equals(c.getPersona()) && this.saldo.equals(c.getSaldo());
+    }
+
+    public int suma(int a, int b) {
+        int suma = a + b;
+        return suma;
+    }
+
+    public Banco getBanco() {
+        return banco;
+    }
+
+    public void setBanco(Banco banco) {
+        this.banco = banco;
     }
 }

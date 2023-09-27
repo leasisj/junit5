@@ -1,7 +1,8 @@
 package com.ijimenez.junit.junit5_app;
 
 import com.ijimenez.junit.junit5_app.eceptions.DineroInsuficienteEception;
-import org.junit.jupiter.api.Assertions;
+import com.ijimenez.junit.junit5_app.models.Banco;
+import com.ijimenez.junit.junit5_app.models.Cuenta;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -66,5 +67,55 @@ class CuentaTest {
         String esperado = "Dinero insuficiente";
 
         assertEquals(esperado, actual);
+    }
+
+    @Test
+    void testSuma() {
+        Cuenta cuenta = new Cuenta();
+        int actual = cuenta.suma(5, 6);
+        int esperado = 11;
+        assertEquals(actual, esperado);
+    }
+
+    @Test
+    void testTranferirDineroCuentas() {
+        Cuenta cuenta = new Cuenta("Isael", new BigDecimal("2500"));
+        Cuenta cuenta2 = new Cuenta("Susan", new BigDecimal("1500.8989"));
+
+        Banco banco = new Banco();
+        banco.setNombre("Bando del bienestar");
+        banco.tranferir(cuenta2, cuenta, new BigDecimal(500));
+
+        assertEquals("1000.8989", cuenta2.getSaldo().toPlainString());
+        assertEquals("3000", cuenta.getSaldo().toPlainString());
+
+    }
+
+    @Test
+    void testRelacionBancoCuentas() {
+        Cuenta cuenta = new Cuenta("Isael", new BigDecimal("2500"));
+        Cuenta cuenta2 = new Cuenta("Susan", new BigDecimal("1500.8989"));
+
+        Banco banco = new Banco();
+        banco.addCuenta(cuenta);
+        banco.addCuenta(cuenta2);
+
+        banco.setNombre("Bando del bienestar");
+        banco.tranferir(cuenta2, cuenta, new BigDecimal(500));
+
+        assertEquals("1000.8989", cuenta2.getSaldo().toPlainString());
+        assertEquals("3000", cuenta.getSaldo().toPlainString());
+
+        assertEquals(2, banco.getCuentas().size());
+
+        assertEquals("Bando del bienestar", cuenta.getBanco().getNombre());
+
+        assertEquals("Isael", banco.getCuentas().stream().filter(c -> c.getPersona().equals("Isael"))
+                .findFirst()
+                .get().getPersona());
+
+        assertTrue(banco.getCuentas().stream()
+                .filter(c -> c.getPersona().equals("Isael"))
+                .findFirst().isPresent());
     }
 }
