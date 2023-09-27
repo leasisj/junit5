@@ -17,9 +17,9 @@ class CuentaTest {
 
         String esperado = "Isael";
         String real = cuenta.getPersona();
-        assertNotNull(real);
-        assertEquals(esperado, real);
-        assertTrue(real.equals(esperado));
+        assertNotNull(real, () -> "La cuenta no puede ser nula");
+        assertEquals(esperado, real, () -> "El nombre de la cuenta no es el que se esperaba: se esperaba " + esperado + " sin embargo fue: " + real);
+        assertTrue(real.equals(esperado), () -> "nombre cuenta esperada debe ser igual a la regal");
     }
 
     @Test
@@ -100,22 +100,21 @@ class CuentaTest {
         banco.addCuenta(cuenta);
         banco.addCuenta(cuenta2);
 
-        banco.setNombre("Bando del bienestar");
+        banco.setNombre("Banco del bienestar");
         banco.tranferir(cuenta2, cuenta, new BigDecimal(500));
 
-        assertEquals("1000.8989", cuenta2.getSaldo().toPlainString());
-        assertEquals("3000", cuenta.getSaldo().toPlainString());
+        assertAll(
+                () -> assertEquals("1000.8989", cuenta2.getSaldo().toPlainString(), () -> "El valor de la cuenta2 no es el esperado"),
+                () -> assertEquals("3000", cuenta.getSaldo().toPlainString(), () -> "El valor de la cuenta no es el esperado"),
+                () -> assertEquals(2, banco.getCuentas().size(), () -> "El banco no tiene las cuentas esperadas"),
+                () -> assertEquals("Banco del bienestar", cuenta.getBanco().getNombre(), () -> "El nombre del banco no es el esperado"),
+                () -> assertEquals("Isaell", banco.getCuentas().stream().filter(c -> c.getPersona().equals("Isael"))
+                        .findFirst()
+                        .get().getPersona(), () -> "No se encontro el nombre"),
+                () -> assertTrue(banco.getCuentas().stream()
+                        .filter(c -> c.getPersona().equals("Isael"))
+                        .findFirst().isPresent(), () -> "No se encontro el nombre")
 
-        assertEquals(2, banco.getCuentas().size());
-
-        assertEquals("Bando del bienestar", cuenta.getBanco().getNombre());
-
-        assertEquals("Isael", banco.getCuentas().stream().filter(c -> c.getPersona().equals("Isael"))
-                .findFirst()
-                .get().getPersona());
-
-        assertTrue(banco.getCuentas().stream()
-                .filter(c -> c.getPersona().equals("Isael"))
-                .findFirst().isPresent());
+        );
     }
 }
