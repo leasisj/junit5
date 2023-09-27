@@ -3,6 +3,8 @@ package com.ijimenez.junit.junit5_app;
 import com.ijimenez.junit.junit5_app.eceptions.DineroInsuficienteEception;
 import com.ijimenez.junit.junit5_app.models.Banco;
 import com.ijimenez.junit.junit5_app.models.Cuenta;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -11,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CuentaTest {
     @Test
+    @DisplayName("probando el nombre de la cuenta correinte!")
     void testNombreCuenta() {
         Cuenta cuenta = new Cuenta("Isael", new BigDecimal("12.45647987"));
         //cuenta.setPersona("Isael");
@@ -23,6 +26,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("probando el saldo de la cuenta correinte, que no sea null y mayor que cero, valor esperado")
     void testSaldoCuenta() {
         Cuenta cuenta = new Cuenta("Isael", new BigDecimal("1000.12345"));
         assertNotNull(cuenta.getSaldo());
@@ -32,6 +36,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("testeando referencias que sean iguales con el metodo equals.")
     void testReferenciaCuenta() {
         Cuenta cuenta = new Cuenta("Susan", new BigDecimal("8900.9997"));
         Cuenta cuenta2 = new Cuenta("Susan", new BigDecimal("8900.9997"));
@@ -92,7 +97,10 @@ class CuentaTest {
     }
 
     @Test
+    @Disabled
+    @DisplayName("probando relaciones entre las cuentas y el banco con assertAll.")
     void testRelacionBancoCuentas() {
+        fail(); //simula un error
         Cuenta cuenta = new Cuenta("Isael", new BigDecimal("2500"));
         Cuenta cuenta2 = new Cuenta("Susan", new BigDecimal("1500.8989"));
 
@@ -108,7 +116,7 @@ class CuentaTest {
                 () -> assertEquals("3000", cuenta.getSaldo().toPlainString(), () -> "El valor de la cuenta no es el esperado"),
                 () -> assertEquals(2, banco.getCuentas().size(), () -> "El banco no tiene las cuentas esperadas"),
                 () -> assertEquals("Banco del bienestar", cuenta.getBanco().getNombre(), () -> "El nombre del banco no es el esperado"),
-                () -> assertEquals("Isaell", banco.getCuentas().stream().filter(c -> c.getPersona().equals("Isael"))
+                () -> assertEquals("Isael", banco.getCuentas().stream().filter(c -> c.getPersona().equals("Isael"))
                         .findFirst()
                         .get().getPersona(), () -> "No se encontro el nombre"),
                 () -> assertTrue(banco.getCuentas().stream()
